@@ -49,6 +49,9 @@ void ASeedGameJamGameMode::OnLevelStarts()
 {
 	Timer = InitialTimer;
 	bIsLevelRunning = true;
+
+	if (ControlledPawn == NULL) return;
+
 	ControlledPawn->StartRecording();
 
 	ControlledPawn->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
@@ -56,12 +59,16 @@ void ASeedGameJamGameMode::OnLevelStarts()
 
 	for (size_t i = 0; i < RepeatingPawns.Num(); i++)
 	{
+		if (!RepeatingPawns[i]) return;
+
 		RepeatingPawns[i]->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
 		RepeatingPawns[i]->SetActorHiddenInGame(true);
 	}
 
 	for (size_t i = 0; i < NumberOfRepeat; i++)
 	{
+		if (!RepeatingPawns[i]) return;
+
 		RepeatingPawns[i]->StartRepeating();
 		RepeatingPawns[i]->SetActorHiddenInGame(false);
 	}
@@ -70,14 +77,22 @@ void ASeedGameJamGameMode::OnLevelStarts()
 void ASeedGameJamGameMode::OnLevelEnds()
 {
 	bIsLevelRunning = false;
+
+	if (ControlledPawn == NULL) return;
+
 	ControlledPawn->StopRecording();
 
 	for (size_t i = 0; i < NumberOfRepeat; i++)
 	{
+		if (!RepeatingPawns[i]) return;
+
 		RepeatingPawns[i]->StopRepeating();
 	}
 
-	RepeatingPawns[NumberOfRepeat]->SetPlayerInputSet(ControlledPawn->GetPlayerInputSet());
+	if (RepeatingPawns.IsValidIndex(NumberOfRepeat) && RepeatingPawns[NumberOfRepeat])
+	{
+		RepeatingPawns[NumberOfRepeat]->SetPlayerInputSet(ControlledPawn->GetPlayerInputSet());
+	}
 
 	NumberOfRepeat++;
 
