@@ -36,8 +36,12 @@ public:
 
 
 
-//protected:
-//
+protected:
+	UPROPERTY(VisibleAnywhere)
+		USceneComponent* RootComp;
+
+	UPROPERTY(VisibleAnywhere)
+		class UBoxComponent* TriggerBoxComp;
 //private:
 
 };
