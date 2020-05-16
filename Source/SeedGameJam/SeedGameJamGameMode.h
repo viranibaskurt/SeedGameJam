@@ -20,22 +20,42 @@ public:
 	virtual void Tick(float DeltaSeconds);
 
 public:
-	UPROPERTY(BlueprintReadOnly)
+
+	UPROPERTY(BlueprintReadWrite)
+		class AGamePawn* ControlledPawn;
+
+	UPROPERTY(BlueprintReadWrite)
 		TArray<class AGamePawn*> RepeatingPawns;
+	
+	UPROPERTY(BlueprintReadWrite)
+		FVector StartLocation;
 
 	UPROPERTY(EditAnywhere)
-		float InitialTimer = 15.0f;
+		float InitialTimer = 3.0f;
 
 	UPROPERTY(BlueprintReadOnly)
 		float Timer;
+
 protected:
+
 	UFUNCTION(BlueprintCallable)
 		void OnLevelStarts();
 	UFUNCTION(BlueprintCallable)
 		void OnLevelEnds();
 
+	bool bIsLevelRunning;
+	int NumberOfRepeat;
+
 
 private:
+
+	UPROPERTY()
+		FTimerHandle InitTimerHandle;
+
+	UFUNCTION()
+		void InitDelayed();
+	void Init();
+
 
 };
 

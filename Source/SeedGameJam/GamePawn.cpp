@@ -38,8 +38,12 @@ void AGamePawn::Tick(float DeltaTime)
 			ExecuteInput(PlayerInputs[RepeatedInputIndex]);
 			RepeatedInputIndex++;
 
-
 		}
+	}
+	else if (PawnControlType == EPawnControlType::NotControlled)
+	{
+		ExecuteInput(CreateInput(0));
+		InputVector = FVector::ZeroVector;
 	}
 }
 
