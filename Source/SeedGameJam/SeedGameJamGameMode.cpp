@@ -13,3 +13,35 @@ ASeedGameJamGameMode::ASeedGameJamGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 }
+
+void ASeedGameJamGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	OnLevelStarts();
+
+
+}
+
+void ASeedGameJamGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	//if (Timer > 0)
+	//{
+	//	Timer -= DeltaSeconds;
+	//}
+	//else
+	//{
+	//	OnLevelEnds();
+	//}
+
+}
+
+void ASeedGameJamGameMode::OnLevelStarts()
+{
+	Timer = InitialTimer;
+
+}
+
+void ASeedGameJamGameMode::OnLevelEnds()
+{
+}

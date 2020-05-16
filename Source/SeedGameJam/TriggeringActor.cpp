@@ -19,7 +19,7 @@ ATriggeringActor::ATriggeringActor()
 	TriggerBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBoxComp"));
 	TriggerBoxComp->SetCollisionProfileName(TEXT("Trigger"));
 	TriggerBoxComp->SetupAttachment(RootComp);
-	TriggerBoxComp->OnComponentBeginOverlap.AddDynamic(this, &ATriggeringActor::OnBeginOverlap);
+	TriggerBoxComp->OnComponentBeginOverlap.AddDynamic(this, &ATriggeringActor::OnOverlapBegin);
 	TriggerBoxComp->OnComponentEndOverlap.AddDynamic(this, &ATriggeringActor::OnOverlapEnd);
 }
 
@@ -37,7 +37,7 @@ void ATriggeringActor::Tick(float DeltaTime)
 
 }
 
-void ATriggeringActor::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void ATriggeringActor::OnOverlapBegin(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 
 	if (!TriggeredActor) return;
@@ -46,6 +46,7 @@ void ATriggeringActor::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent,
 
 	if (Pawn)
 	{
+		OnOverlapBegin_BP_Event();
 		TriggeredActor->OnTriggeringOverlapBegin();
 	}
 
@@ -58,6 +59,7 @@ void ATriggeringActor::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor
 	APawn* Pawn = Cast<APawn>(OtherActor);
 	if (Pawn)
 	{
+		OnOverlapEnd_BP_Event();
 		TriggeredActor->OnTriggeringOverlapEnd();
 	}
 }

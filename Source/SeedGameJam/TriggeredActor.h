@@ -25,8 +25,16 @@ public:
 
 
 public:
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnTriggeringOverlapBegin_BP_Event();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnTriggeringOverlapEnd_BP_Event();
+
 	virtual void OnTriggeringOverlapBegin();
 	virtual void OnTriggeringOverlapEnd();
+
+
 
 //protected:
 //

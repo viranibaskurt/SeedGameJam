@@ -38,8 +38,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class ATriggeredActor* TriggeredActor;
 
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnOverlapBegin_BP_Event();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnOverlapEnd_BP_Event();
+
 	UFUNCTION()
-		virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 		virtual void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);

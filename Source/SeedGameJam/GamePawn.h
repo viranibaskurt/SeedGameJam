@@ -6,6 +6,28 @@
 #include "GameFramework/Pawn.h"
 #include "GamePawn.generated.h"
 
+
+USTRUCT(BlueprintType)
+struct FUserPawnInput
+{
+	GENERATED_USTRUCT_BODY()
+
+		UPROPERTY()
+		FVector MoveInput;
+
+	UPROPERTY()
+		float DeltaTime;
+
+};
+
+UENUM(BlueprintType)		//"BlueprintType" is essential to include
+enum class EPawnControlType :uint8
+{
+	RecordingUserControl,
+	RepeatingUserControl,
+	NotControlled
+};
+
 UCLASS()
 class SEEDGAMEJAM_API AGamePawn : public APawn
 {
@@ -19,7 +41,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -29,19 +51,54 @@ public:
 
 public:
 	UFUNCTION(BlueprintPure)
-	float GetSpeed() { return Speed; }
+		float GetSpeed() { return Speed; }
+
+	UFUNCTION(BlueprintCallable)
+		void SetPawnControlType(EPawnControlType CtrType) { PawnControlType = CtrType; }
+
+	UFUNCTION(BlueprintCallable)
+		void SetPlayerInputSet(TArray<FUserPawnInput> InPlayerInputs) { PlayerInputs = InPlayerInputs; }
+
+	UFUNCTION(BlueprintPure)
+		TArray<FUserPawnInput> GetPlayerInputSet() { return PlayerInputs; }
+
+	UFUNCTION(BlueprintCallable)
+		void ResetInputSet();
+
+	UFUNCTION(BlueprintCallable)
+		void StartRecording();
+	UFUNCTION(BlueprintCallable)
+		void StartRepeating();
+
+	UFUNCTION(BlueprintCallable)
+		void StopRecording();
+
+	UFUNCTION(BlueprintCallable)
+		void StopRepeating();
+
 
 protected:
+	UPROPERTY(EditDefaultsOnly)
+		float InitialMoveSpeed = 180.0f;
+
+	UPROPERTY()
+		TArray< FUserPawnInput> PlayerInputs;
+
+	EPawnControlType PawnControlType = EPawnControlType::NotControlled;
+
+	FVector InputVector;
+	float Speed;
+
+	int RepeatedInputIndex;
+	bool bIsGameRunning;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
-	UPROPERTY(EditDefaultsOnly)
-		float InitialMoveSpeed=180.0f;
+	FUserPawnInput CreateInput(float DeltaTime);
+	void RecordInput(FUserPawnInput Input);
+	void ExecuteInput(FUserPawnInput Input);
 
-	FVector InputVector;
-	float Speed;
-	//FVector Velocity;
 private:
 
 };

@@ -17,7 +17,6 @@ AGamePawn::AGamePawn()
 void AGamePawn::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -26,18 +25,22 @@ void AGamePawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	Speed = InputVector.Size() * 375;
-	if (InputVector.SizeSquared() > 0)
+	if (PawnControlType == EPawnControlType::RecordingUserControl)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("input vector : %s"), *InputVector.ToString());
-
-
-		AddActorWorldOffset(InputVector.GetSafeNormal() * GetWorld()->GetDeltaSeconds() * InitialMoveSpeed, false);
-
-		FRotator Rot = UKismetMathLibrary::MakeRotFromX(InputVector.RotateAngleAxis(-90, FVector(0, 0, 1)));
-		SetActorRotation(Rot);
+		FUserPawnInput CurrentInput = CreateInput(DeltaTime);
+		RecordInput(CurrentInput);
+		ExecuteInput(CurrentInput);
 	}
+	else if (PawnControlType == EPawnControlType::RepeatingUserControl)
+	{
+		if (PlayerInputs.IsValidIndex(RepeatedInputIndex))
+		{
+			ExecuteInput(PlayerInputs[RepeatedInputIndex]);
+			RepeatedInputIndex++;
 
+
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -45,46 +48,78 @@ void AGamePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGamePawn::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGamePawn::MoveRight);
 }
 
+
+void AGamePawn::ResetInputSet()
+{
+	PlayerInputs.Empty();
+}
+
+void AGamePawn::StartRecording()
+{
+	ResetInputSet();
+	SetPawnControlType(EPawnControlType::RecordingUserControl);
+}
+
+void AGamePawn::StartRepeating()
+{
+	RepeatedInputIndex = 0;
+	SetPawnControlType(EPawnControlType::RepeatingUserControl);
+}
+
+void AGamePawn::StopRecording()
+{
+	SetPawnControlType(EPawnControlType::NotControlled);
+}
+
+void AGamePawn::StopRepeating()
+{
+	SetPawnControlType(EPawnControlType::NotControlled);
+}
+
+
 void AGamePawn::MoveForward(float Value)
 {
-	//if (Value != 0.0f)
-	{
-		//const FRotator Rotation = GetActorRotation();
-		//const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y) /** Value*/;
-		//UE_LOG(LogTemp, Warning, TEXT("move forward : %s"), *Direction.ToString());
-		////AddMovementInput(Direction, Value);
-		////AddActorWorldOffset(Direction.GetSafeNormal() * GetWorld()->GetDeltaSeconds()*150, false);
-		//AddMovementInput(Direction, Value);
-		////AddActorWorldOffset(FVector::RightVector * 10, false);
-		InputVector.X = Value;
-
-	}
-
-
+	InputVector.X = Value;
 }
 
 void AGamePawn::MoveRight(float Value)
 {
-	//if (Value != 0.0f)
-	{
-		//const FRotator Rotation = GetActorRotation();
-		//const FRotator YawRotation(0, Rotation.Yaw, 0);
+	InputVector.Y = Value;
+}
 
-		//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X) /** (-Value)*/;
-		////AddMovementInput(Direction, Value);
-		//UE_LOG(LogTemp, Warning, TEXT("move right : %s"), *Direction.ToString());
+FUserPawnInput AGamePawn::CreateInput(float DeltaTime)
+{
+	FUserPawnInput TempInput;
+	TempInput.MoveInput = InputVector;
+	TempInput.DeltaTime = DeltaTime;
+	return TempInput;
+}
 
-		////AddActorWorldOffset(Direction.GetSafeNormal() * GetWorld()->GetDeltaSeconds()  * 150, false);
-		//AddMovementInput(Direction, Value);
-		InputVector.Y = Value;
-	}
+void AGamePawn::RecordInput(FUserPawnInput Input)
+{
+	PlayerInputs.Add(Input);
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerInputs.Num());
+}
+
+void AGamePawn::ExecuteInput(FUserPawnInput Input)
+{
+	//if (PawnControlType == EPawnControlType::RepeatingUserControl)
+	//{
+	//	FString debug = Input.MoveInput.ToString();
+	//	UE_LOG(LogTemp, Warning, TEXT("%f"), Input.DeltaTime);
+	//}
+	AddActorWorldOffset(Input.MoveInput.GetSafeNormal() * Input.DeltaTime * InitialMoveSpeed, false);
+
+	FRotator Rot = UKismetMathLibrary::MakeRotFromX(Input.MoveInput.RotateAngleAxis(-90, FVector(0, 0, 1)));
+	SetActorRotation(Rot);
+
+	Speed = Input.MoveInput.Size() * 375;
 
 }
+
+
 
