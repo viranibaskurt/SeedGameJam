@@ -26,6 +26,8 @@ public:
 
 
 public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+		class ATriggeredActor* TriggeredActor;
 
 protected:
 
@@ -35,8 +37,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		class UBoxComponent* TriggerBoxComp;
 	
-	UPROPERTY(EditAnywhere)
-		class ATriggeredActor* TriggeredActor;
+
 
 
 	UFUNCTION(BlueprintImplementableEvent)
