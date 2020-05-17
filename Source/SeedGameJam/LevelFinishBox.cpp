@@ -35,6 +35,10 @@ void ALevelFinishBox::Tick(float DeltaTime)
 
 void ALevelFinishBox::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	OnLevelFinished.Broadcast();
+	APawn* Pawn = Cast<APawn>(OtherActor);
+	if (Pawn)
+	{
+		OnLevelFinished.Broadcast();
+	}
 }
 

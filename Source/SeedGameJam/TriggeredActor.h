@@ -37,10 +37,10 @@ public:
 
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 		USceneComponent* RootComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 		class UBoxComponent* TriggerBoxComp;
 //private:
 

@@ -26,7 +26,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		TArray<class AGamePawn*> RepeatingPawns;
-	
+
 	UPROPERTY(BlueprintReadWrite)
 		FVector StartLocation;
 
@@ -40,10 +40,13 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSoftObjectPtr<class ALevelContainer>> Levels;
+		TArray<TSoftObjectPtr<class ALevelContainer>> Levels;
 
 	UPROPERTY(EditAnywhere)
 		TSoftObjectPtr<class ALevelFinishBox> FinishBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float TimeBetweenHands = 2.0f;
 
 	bool bIsLevelRunning;
 	int NumberOfRepeat;
@@ -56,7 +59,7 @@ protected:
 		void OnHandStarts();
 	UFUNCTION(BlueprintCallable)
 		void OnHandEnds();
-	
+
 	UFUNCTION(BlueprintCallable)
 		void OnSuccess();
 
@@ -95,9 +98,16 @@ private:
 	UPROPERTY()
 		FTimerHandle InitTimerHandle;
 
+	UPROPERTY()
+		FTimerHandle StartHandTimerHandle;
+
 	UFUNCTION()
 		void InitDelayed();
+	UFUNCTION()
+		void StartHandWithDelay();
+	
 	void Init();
+
 
 };
 

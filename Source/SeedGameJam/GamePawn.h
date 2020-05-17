@@ -66,6 +66,22 @@ public:
 		void ResetInputSet();
 
 	UFUNCTION(BlueprintCallable)
+		void SetRagdollState(bool State);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void SetRagdollState_BP(bool State);
+
+	UFUNCTION(BlueprintCallable)
+		void Explode();
+
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void Explode_BP();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ResetForces();
+
+	UFUNCTION(BlueprintCallable)
 		void StartRecording();
 	UFUNCTION(BlueprintCallable)
 		void StartRepeating();

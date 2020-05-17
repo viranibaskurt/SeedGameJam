@@ -44,6 +44,7 @@ void AGamePawn::Tick(float DeltaTime)
 	{
 		ExecuteInput(CreateInput(0));
 		InputVector = FVector::ZeroVector;
+		Speed = 0;
 	}
 }
 
@@ -62,6 +63,17 @@ void AGamePawn::ResetInputSet()
 	PlayerInputs.Empty();
 }
 
+void AGamePawn::SetRagdollState(bool State)
+{
+	SetRagdollState_BP(State);
+}
+
+void AGamePawn::Explode()
+{
+	Explode_BP();
+}
+
+
 void AGamePawn::StartRecording()
 {
 	ResetInputSet();
@@ -77,6 +89,7 @@ void AGamePawn::StartRepeating()
 void AGamePawn::StopRecording()
 {
 	SetPawnControlType(EPawnControlType::NotControlled);
+	
 }
 
 void AGamePawn::StopRepeating()

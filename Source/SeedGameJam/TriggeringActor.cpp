@@ -39,7 +39,6 @@ void ATriggeringActor::Tick(float DeltaTime)
 
 void ATriggeringActor::OnOverlapBegin(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-
 	if (!TriggeredActor) return;
 
 	APawn* Pawn = Cast<APawn>(OtherActor);

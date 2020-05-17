@@ -65,6 +65,12 @@ void ASeedGameJamGameMode::Tick(float DeltaSeconds)
 
 void ASeedGameJamGameMode::OnHandStarts()
 {
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		World->GetTimerManager().ClearTimer(StartHandTimerHandle);
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("Hand Starts"));
 
 	Timer = InitialTimer;
@@ -72,17 +78,22 @@ void ASeedGameJamGameMode::OnHandStarts()
 
 	if (ControlledPawn == NULL) return;
 
+	ControlledPawn->SetRagdollState(false);
+	ControlledPawn->ResetForces();
+	ControlledPawn->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
 	ControlledPawn->StartRecording();
 
-	ControlledPawn->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
 
 
 	for (size_t i = 0; i < RepeatingPawns.Num(); i++)
 	{
 		if (!RepeatingPawns[i]) return;
 
+		RepeatingPawns[i]->ResetForces();
+
 		RepeatingPawns[i]->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
 		RepeatingPawns[i]->SetActorHiddenInGame(true);
+		RepeatingPawns[i]->SetRagdollState(false);
 	}
 
 
@@ -127,7 +138,9 @@ void ASeedGameJamGameMode::OnHandEnds()
 		return;
 	}
 
-	OnHandStarts();
+	StartHandWithDelay();
+
+	//OnHandStarts();
 
 	//if (Levels.IsValidIndex(ActiveLevelIndex) && Levels[ActiveLevelIndex])
 	//{
@@ -160,8 +173,10 @@ void ASeedGameJamGameMode::OnSuccess()
 	ActivateLevel(ActiveLevelIndex);
 	PlayedHandCounter = 0;
 
+
+	StartHandWithDelay();
 	//TODO:Call with delay
-	OnHandStarts();
+	//OnHandStarts();
 
 }
 
@@ -187,6 +202,11 @@ void ASeedGameJamGameMode::ActivateLevel(int index)
 		NumberOfRepeat = Levels[index]->NumberOfRepeatInLevel;
 
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("You forget to reference Level BP"));
+
+	}
 }
 
 void ASeedGameJamGameMode::DeactivateLevel(int index)
@@ -208,10 +228,19 @@ void ASeedGameJamGameMode::Init()
 
 	for (size_t i = 0; i < Levels.Num(); i++)
 	{
-
 		DeactivateLevel(i);
 	}
 
+}
+
+void ASeedGameJamGameMode::StartHandWithDelay()
+{
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		World->GetTimerManager().SetTimer(StartHandTimerHandle, this, &ASeedGameJamGameMode::OnHandStarts, TimeBetweenHands, false);
+	}
 }
 
 void ASeedGameJamGameMode::InitDelayed()
