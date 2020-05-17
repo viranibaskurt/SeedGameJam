@@ -265,7 +265,7 @@ void ASeedGameJamGameMode::InitDelayed()
 		World->GetTimerManager().ClearTimer(InitTimerHandle);
 	}
 
-	ActiveLevelIndex = 3;
+	ActiveLevelIndex = 0;
 	ActivateLevel(ActiveLevelIndex);
 
 	OnHandStarts();
