@@ -79,7 +79,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-		float InitialMoveSpeed = 180.0f;
+		float InitialMoveSpeed = 400.0f;
 
 	UPROPERTY()
 		TArray< FUserPawnInput> PlayerInputs;

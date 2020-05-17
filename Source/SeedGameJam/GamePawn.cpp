@@ -116,10 +116,13 @@ void AGamePawn::ExecuteInput(FUserPawnInput Input)
 	//	FString debug = Input.MoveInput.ToString();
 	//	UE_LOG(LogTemp, Warning, TEXT("%f"), Input.DeltaTime);
 	//}
-	AddActorWorldOffset(Input.MoveInput.GetSafeNormal() * Input.DeltaTime * InitialMoveSpeed, false);
+	AddActorWorldOffset(Input.MoveInput.GetSafeNormal() * Input.DeltaTime * InitialMoveSpeed,true);
 
-	FRotator Rot = UKismetMathLibrary::MakeRotFromX(Input.MoveInput.RotateAngleAxis(-90, FVector(0, 0, 1)));
-	SetActorRotation(Rot);
+	if (Input.MoveInput.SizeSquared()>0)
+	{
+		FRotator Rot = UKismetMathLibrary::MakeRotFromX(Input.MoveInput.RotateAngleAxis(-90, FVector(0, 0, 1)));
+		SetActorRotation(Rot);
+	}
 
 	Speed = Input.MoveInput.Size() * 375;
 

@@ -36,16 +36,48 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		float Timer;
 
+
 protected:
 
-	UFUNCTION(BlueprintCallable)
-		void OnLevelStarts();
-	UFUNCTION(BlueprintCallable)
-		void OnLevelEnds();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSoftObjectPtr<class ALevelContainer>> Levels;
+
+	UPROPERTY(EditAnywhere)
+		TSoftObjectPtr<class ALevelFinishBox> FinishBox;
 
 	bool bIsLevelRunning;
 	int NumberOfRepeat;
 
+	int ActiveLevelIndex;
+
+	UFUNCTION(BlueprintCallable)
+		void OnHandStarts();
+	UFUNCTION(BlueprintCallable)
+		void OnHandEnds();
+	
+	UFUNCTION(BlueprintCallable)
+		void OnSuccess();
+
+	UFUNCTION(BlueprintCallable)
+		void OnFail();
+
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void InitTimerUI(float Time);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void InitNumSelfUI(int Num);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void FadeInBlack();
+	UFUNCTION(BlueprintImplementableEvent)
+		void FadeOutBlack();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ShowUIState(bool State);
+
+	void ActivateLevel(int index);
+	void DeactivateLevel(int index);
 
 private:
 
@@ -55,7 +87,6 @@ private:
 	UFUNCTION()
 		void InitDelayed();
 	void Init();
-
 
 };
 

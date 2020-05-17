@@ -36,12 +36,13 @@ void ATriggeredActor::Tick(float DeltaTime)
 void ATriggeredActor::OnTriggeringOverlapBegin()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
+	OnTriggeringOverlapBegin_BP_Event();
 
 }
 
 void ATriggeredActor::OnTriggeringOverlapEnd()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap End"));
-
+	OnTriggeringOverlapEnd_BP_Event();
 }
 
