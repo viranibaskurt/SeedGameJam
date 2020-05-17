@@ -70,6 +70,7 @@ void AGamePawn::SetRagdollState(bool State)
 
 void AGamePawn::Explode()
 {
+	SetPawnControlType(EPawnControlType::NotControlled);
 	Explode_BP();
 }
 
