@@ -54,6 +54,7 @@ void ATriggeringActor::OnOverlapBegin(UPrimitiveComponent * OverlappedComponent,
 
 void ATriggeringActor::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
+
 	if (!TriggeredActor) return;
 
 	APawn* Pawn = Cast<APawn>(OtherActor);

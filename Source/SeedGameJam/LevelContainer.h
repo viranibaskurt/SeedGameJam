@@ -23,4 +23,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int NumberOfRepeatInLevel = 1;
+
 };

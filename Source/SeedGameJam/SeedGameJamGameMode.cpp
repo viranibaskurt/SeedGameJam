@@ -59,13 +59,14 @@ void ASeedGameJamGameMode::Tick(float DeltaSeconds)
 		OnHandEnds();
 	}
 
-	InitTimerUI(Timer); 
-
+	InitTimerUI(Timer);
 
 }
 
 void ASeedGameJamGameMode::OnHandStarts()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Hand Starts"));
+
 	Timer = InitialTimer;
 	bIsLevelRunning = true;
 
@@ -84,63 +85,96 @@ void ASeedGameJamGameMode::OnHandStarts()
 		RepeatingPawns[i]->SetActorHiddenInGame(true);
 	}
 
-	for (size_t i = 0; i < NumberOfRepeat; i++)
+
+	for (size_t i = 0; i < PlayedHandCounter; i++)
 	{
 		if (!RepeatingPawns[i]) return;
 
 		RepeatingPawns[i]->StartRepeating();
 		RepeatingPawns[i]->SetActorHiddenInGame(false);
 	}
+
+	InitNumSelfUI(NumberOfRepeat-PlayedHandCounter);
 }
 
 void ASeedGameJamGameMode::OnHandEnds()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Hand Ends"));
+
 	bIsLevelRunning = false;
 
 	if (ControlledPawn == NULL) return;
 
 	ControlledPawn->StopRecording();
 
-	for (size_t i = 0; i < NumberOfRepeat; i++)
+	for (size_t i = 0; i < RepeatingPawns.Num(); i++)
 	{
 		if (!RepeatingPawns[i]) return;
 
 		RepeatingPawns[i]->StopRepeating();
 	}
 
-	if (RepeatingPawns.IsValidIndex(NumberOfRepeat) && RepeatingPawns[NumberOfRepeat])
+	if (RepeatingPawns.IsValidIndex(PlayedHandCounter) && RepeatingPawns[PlayedHandCounter])
 	{
-		RepeatingPawns[NumberOfRepeat]->SetPlayerInputSet(ControlledPawn->GetPlayerInputSet());
+		RepeatingPawns[PlayedHandCounter]->SetPlayerInputSet(ControlledPawn->GetPlayerInputSet());
 	}
 
-	NumberOfRepeat++;
+	PlayedHandCounter++;
 
-	if (NumberOfRepeat >= RepeatingPawns.Num())
+	if (PlayedHandCounter > NumberOfRepeat)
 	{
+		OnFail();
 		return;
 	}
+
+	OnHandStarts();
+
+	//if (Levels.IsValidIndex(ActiveLevelIndex) && Levels[ActiveLevelIndex])
+	//{
+	//	//if (NumberOfRepeat > Levels[ActiveLevelIndex]->NumberOfRepeatInLevel)
+	//	{
+	//		OnFail();
+	//	}
+	//}
+
 
 }
 
 void ASeedGameJamGameMode::OnSuccess()
 {
-	UE_LOG(LogTemp, Error, TEXT("Success. Next level"));
+	if (ControlledPawn)
+	{
+		ControlledPawn->SetPawnControlType(EPawnControlType::NotControlled);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Success. Next level"));
 
 	DeactivateLevel(ActiveLevelIndex);
 	ActiveLevelIndex++;
-
 	if (ActiveLevelIndex >= Levels.Num())
 	{
 		//GameFinishedSuccessfully
+		ShowWinUI();
 	}
 
 	ActivateLevel(ActiveLevelIndex);
+	PlayedHandCounter = 0;
+
+	//TODO:Call with delay
+	OnHandStarts();
 
 }
 
 void ASeedGameJamGameMode::OnFail()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Fail"));
 
+	if (ControlledPawn)
+	{
+		ControlledPawn->SetPawnControlType(EPawnControlType::NotControlled);
+	}
+
+	ShowFailUI();
 }
 
 void ASeedGameJamGameMode::ActivateLevel(int index)
@@ -149,6 +183,9 @@ void ASeedGameJamGameMode::ActivateLevel(int index)
 	{
 		Levels[index]->SetActorHiddenInGame(false);
 		Levels[index]->SetActorLocation(FVector::ZeroVector);
+
+		NumberOfRepeat = Levels[index]->NumberOfRepeatInLevel;
+
 	}
 }
 
@@ -169,7 +206,7 @@ void ASeedGameJamGameMode::Init()
 		World->GetTimerManager().SetTimer(InitTimerHandle, this, &ASeedGameJamGameMode::InitDelayed, 0.1, false);
 	}
 
-	for (size_t i = 1; i < Levels.Num(); i++)
+	for (size_t i = 0; i < Levels.Num(); i++)
 	{
 
 		DeactivateLevel(i);
@@ -185,7 +222,8 @@ void ASeedGameJamGameMode::InitDelayed()
 		World->GetTimerManager().ClearTimer(InitTimerHandle);
 	}
 
+	ActiveLevelIndex = 0;
+	ActivateLevel(ActiveLevelIndex);
+
 	OnHandStarts();
-
-
 }

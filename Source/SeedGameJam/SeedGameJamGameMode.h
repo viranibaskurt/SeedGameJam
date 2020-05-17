@@ -47,8 +47,10 @@ protected:
 
 	bool bIsLevelRunning;
 	int NumberOfRepeat;
+	int PlayedHandCounter;
 
 	int ActiveLevelIndex;
+
 
 	UFUNCTION(BlueprintCallable)
 		void OnHandStarts();
@@ -62,6 +64,7 @@ protected:
 		void OnFail();
 
 
+#pragma region UI_Events
 	UFUNCTION(BlueprintImplementableEvent)
 		void InitTimerUI(float Time);
 
@@ -75,6 +78,14 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void ShowUIState(bool State);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ShowWinUI();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ShowFailUI();
+#pragma endregion
+
 
 	void ActivateLevel(int index);
 	void DeactivateLevel(int index);
