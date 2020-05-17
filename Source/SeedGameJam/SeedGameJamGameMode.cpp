@@ -63,6 +63,13 @@ void ASeedGameJamGameMode::Tick(float DeltaSeconds)
 
 }
 
+void ASeedGameJamGameMode::ResetActiveLevel()
+{
+	ActivateLevel(ActiveLevelIndex);
+	PlayedHandCounter = 0;
+	OnHandStarts();
+}
+
 void ASeedGameJamGameMode::OnHandStarts()
 {
 	UWorld* World = GetWorld();
@@ -110,6 +117,8 @@ void ASeedGameJamGameMode::OnHandStarts()
 
 void ASeedGameJamGameMode::OnHandEnds()
 {
+
+	ShowHandEndScreenEffect();
 	UE_LOG(LogTemp, Warning, TEXT("Hand Ends"));
 
 	bIsLevelRunning = false;
