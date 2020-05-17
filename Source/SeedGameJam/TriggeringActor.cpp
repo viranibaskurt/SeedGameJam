@@ -10,10 +10,10 @@
 // Sets default values
 ATriggeringActor::ATriggeringActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComp= CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
+	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
 	SetRootComponent(RootComp);
 
 	TriggerBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBoxComp"));
@@ -27,7 +27,7 @@ ATriggeringActor::ATriggeringActor()
 void ATriggeringActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -37,29 +37,31 @@ void ATriggeringActor::Tick(float DeltaTime)
 
 }
 
-void ATriggeringActor::OnOverlapBegin(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void ATriggeringActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!TriggeredActor) return;
+
+
 
 	APawn* Pawn = Cast<APawn>(OtherActor);
 
 	if (Pawn)
 	{
 		OnOverlapBegin_BP_Event();
+		if (!TriggeredActor) return;
 		TriggeredActor->OnTriggeringOverlapBegin();
 	}
 
 }
 
-void ATriggeringActor::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+void ATriggeringActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 
-	if (!TriggeredActor) return;
 
 	APawn* Pawn = Cast<APawn>(OtherActor);
 	if (Pawn)
 	{
 		OnOverlapEnd_BP_Event();
+		if (!TriggeredActor) return;
 		TriggeredActor->OnTriggeringOverlapEnd();
 	}
 }
