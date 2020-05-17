@@ -35,7 +35,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		float Timer;
-
+	UFUNCTION(BlueprintCallable)
+		void ResetActiveLevel();
 
 protected:
 
@@ -66,6 +67,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		void OnFail();
 
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ShowHandEndScreenEffect();
 
 #pragma region UI_Events
 	UFUNCTION(BlueprintImplementableEvent)
