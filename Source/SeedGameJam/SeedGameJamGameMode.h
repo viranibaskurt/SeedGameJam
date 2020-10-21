@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "SeedGameJamGameMode.generated.h"
 
+class AGamePawn;
+
 UCLASS(minimalapi)
 class ASeedGameJamGameMode : public AGameModeBase
 {
@@ -22,10 +24,10 @@ public:
 public:
 
 	UPROPERTY(BlueprintReadWrite)
-		class AGamePawn* ControlledPawn;
+		AGamePawn* ControlledPawn;
 
 	UPROPERTY(BlueprintReadWrite)
-		TArray<class AGamePawn*> RepeatingPawns;
+		TArray<AGamePawn*> RepeatingPawns;
 
 	UPROPERTY(BlueprintReadWrite)
 		FVector StartLocation;
@@ -93,7 +95,6 @@ protected:
 		void ShowFailUI();
 #pragma endregion
 
-
 	void ActivateLevel(int index);
 	void DeactivateLevel(int index);
 
@@ -112,6 +113,7 @@ private:
 	
 	void Init();
 
+	void ResetPawnState(AGamePawn* PawnToReset);
 
 };
 

@@ -4,12 +4,26 @@
 #include "GamePawn.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/CapsuleComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 AGamePawn::AGamePawn()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	//RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
+	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
+	SetRootComponent(CapsuleComp);
+
+	//CapsuleComp->SetupAttachment(RootComp);
+
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+	CameraComp->SetupAttachment(CapsuleComp);
+
+	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComp"));
+	SkeletalMeshComp->SetupAttachment(CapsuleComp);
 
 }
 
@@ -71,7 +85,11 @@ void AGamePawn::SetRagdollState(bool State)
 void AGamePawn::Explode()
 {
 	SetPawnControlType(EPawnControlType::NotControlled);
-	Explode_BP();
+	//Explode_BP();
+	if (CapsuleComp)
+	{
+		CapsuleComp->SetEnableGravity(true);
+	}
 }
 
 
@@ -90,12 +108,23 @@ void AGamePawn::StartRepeating()
 void AGamePawn::StopRecording()
 {
 	SetPawnControlType(EPawnControlType::NotControlled);
-	
+
 }
 
 void AGamePawn::StopRepeating()
 {
 	SetPawnControlType(EPawnControlType::NotControlled);
+}
+
+void AGamePawn::ResetForces()
+{
+	if (CapsuleComp)
+	{
+		CapsuleComp->SetEnableGravity(false);
+		CapsuleComp->SetSimulatePhysics(false);
+		CapsuleComp->SetSimulatePhysics(true);
+	}
+
 }
 
 
@@ -120,19 +149,13 @@ FUserPawnInput AGamePawn::CreateInput(float DeltaTime)
 void AGamePawn::RecordInput(FUserPawnInput Input)
 {
 	PlayerInputs.Add(Input);
-	//UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerInputs.Num());
 }
 
 void AGamePawn::ExecuteInput(FUserPawnInput Input)
 {
-	//if (PawnControlType == EPawnControlType::RepeatingUserControl)
-	//{
-	//	FString debug = Input.MoveInput.ToString();
-	//	UE_LOG(LogTemp, Warning, TEXT("%f"), Input.DeltaTime);
-	//}
-	AddActorWorldOffset(Input.MoveInput.GetSafeNormal() * Input.DeltaTime * InitialMoveSpeed,true);
+	AddActorWorldOffset(Input.MoveInput.GetSafeNormal() * Input.DeltaTime * InitialMoveSpeed, true);
 
-	if (Input.MoveInput.SizeSquared()>0)
+	if (Input.MoveInput.SizeSquared() > 0)
 	{
 		FRotator Rot = UKismetMathLibrary::MakeRotFromX(Input.MoveInput.RotateAngleAxis(-90, FVector(0, 0, 1)));
 		SetActorRotation(Rot);
