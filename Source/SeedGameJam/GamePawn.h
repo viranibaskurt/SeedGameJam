@@ -48,6 +48,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 public:
 	UFUNCTION(BlueprintPure)
 		float GetSpeed() { return Speed; }
@@ -74,6 +75,11 @@ public:
 		void Explode();
 
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void Explode_BP();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ResetForces();
 
 	UFUNCTION(BlueprintCallable)
 		void StartRecording();
@@ -86,18 +92,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void StopRepeating();
 
-	void ResetForces();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		USceneComponent* RootComp;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		USkeletalMeshComponent* SkeletalMeshComp;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UCapsuleComponent* CapsuleComp;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UCameraComponent* CameraComp;
-
 	UPROPERTY(EditDefaultsOnly)
 		float InitialMoveSpeed = 400.0f;
 

@@ -98,15 +98,22 @@ void ASeedGameJamGameMode::OnHandStarts()
 
 	if (ControlledPawn == NULL) return;
 
-	ResetPawnState(ControlledPawn);
+	ControlledPawn->SetRagdollState(false);
+	ControlledPawn->ResetForces();
+	ControlledPawn->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
 	ControlledPawn->StartRecording();
+
+
 
 	for (size_t i = 0; i < RepeatingPawns.Num(); i++)
 	{
 		if (!RepeatingPawns[i]) return;
 
-		ResetPawnState(RepeatingPawns[i]);
+		RepeatingPawns[i]->ResetForces();
+
+		RepeatingPawns[i]->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
 		RepeatingPawns[i]->SetActorHiddenInGame(true);
+		RepeatingPawns[i]->SetRagdollState(false);
 	}
 
 
@@ -121,15 +128,9 @@ void ASeedGameJamGameMode::OnHandStarts()
 	InitNumSelfUI(NumberOfRepeat - PlayedHandCounter);
 }
 
-void ASeedGameJamGameMode::ResetPawnState(AGamePawn* PawnToReset)
-{
-	PawnToReset->SetRagdollState(false);
-	PawnToReset->ResetForces();
-	PawnToReset->SetActorLocationAndRotation(StartLocation, FRotator::ZeroRotator);
-}
-
 void ASeedGameJamGameMode::OnHandEnds()
 {
+
 	ShowHandEndScreenEffect();
 	UE_LOG(LogTemp, Warning, TEXT("Hand Ends"));
 
@@ -245,8 +246,6 @@ void ASeedGameJamGameMode::Init()
 	}
 
 }
-
-
 
 void ASeedGameJamGameMode::StartHandWithDelay()
 {
